@@ -46,15 +46,16 @@ export function Home() {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
                     {products.map((product) => (
                         <section className="w-full" key={product.id}>
-                            <img
-                                className="w-full rounded-lg max-h-70 mb-2"
-                                src={product.cover}
-                                alt={product.title}
-                            />
                             <Link
-                                to={`/product/${product.id}`}
-                                className="font-medium mt-1 mb-2">
-                                {product.title}
+                                to={`/product/${product.id}`}>
+                                <img
+                                    className="w-full rounded-lg max-h-70 mb-2"
+                                    src={product.cover}
+                                    alt={product.title}
+                                />
+                                <p className="font-medium mt-1 mb-2">
+                                    {product.title}
+                                </p>
                             </Link>
 
                             <div className="flex gap-3 items-center">

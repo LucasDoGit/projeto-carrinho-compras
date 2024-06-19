@@ -19,20 +19,20 @@ export function Product() {
     useEffect(() => {
         async function getProduct() {
             
-            const response = await api.get(`/products/${id}`);
-            
-            if(response.statusText === "Not Found") {
-                console.log("entrou no if")
-                navigate("/")
-                return;
-            }
-
-            setProduct(response.data)
-            setLoading(false)
+            await api.get(`/products/${id}`)
+                .then((res) => {
+                    setProduct(res.data)
+                    setLoading(false)
+                })
+                .catch((err) => {
+                    console.log("Erro ao tentar requisitar produto: ", err)
+                    navigate("/")
+                    return;
+                })
         }
 
         getProduct();
-    }, [])
+    }, [id])
 
     function handleAddCartItem(product: ProductsProps) {
         addItemCart(product)
@@ -42,6 +42,7 @@ export function Product() {
                 color: "#fff"
             }
         })
+        navigate("/cart")
     }
 
     if (loading || !product) {
@@ -53,34 +54,31 @@ export function Product() {
     }
 
     return (
-        <div className="flex w-full max-w-7xl px-4 mx-auto">
-            <div className="w-full flex justify-between mt-12 gap-6" key={product.id}>
-                <img
-                    className="w-2/6 rounded-lg max-h-70 mb-2"
-                    src={product.cover}
-                    alt={product.title}
-                />
-                <section className="flex flex-col mt-12">
-                    <h1 className="font-medium mt-1 mb-2">
-                        {product.title}
-                    </h1>
-                    <p className="max-w-2xl">
-                        {product.description}
-                    </p>
-
-                    <div className="flex gap-3 items-center">
-                        <strong className="text-zinc-700/90 text-2xl">
-                            {product.price.toLocaleString("pt-BR", {
-                                style: "currency",
-                                currency: "BRL"
-                            })}
-                        </strong>
-                        <button className="bg-zinc-900 p-1 rounded" onClick={() => handleAddCartItem(product)}>
-                            <BsCartPlus size={20} color="#fff" />
-                        </button>
+        <main className="w-full max-w-7xl px-4 mx-auto my-6">
+            <section className="w-full">
+                <div className="flex flex-col lg:flex-row">
+                    <img
+                        className="flex-1 w-full max-h-72 object-contain"
+                        src={product?.cover}
+                        alt={product?.title}
+                    />
+                    <div className="flex-1">
+                        <h1 className="font-bold text-2xl mt-4 mb-2">{product?.title}</h1>
+                        <p className="my-4">{product?.description}</p>
+                        <div className="flex items-center gap-3">
+                            <strong className="text-zinc-700/90 text-2xl">
+                                {product?.price.toLocaleString("pt-BR", {
+                                    style: "currency",
+                                    currency: "BRL"
+                                })}
+                            </strong>
+                            <button className="bg-zinc-900 p-1 rounded" onClick={() => handleAddCartItem(product)}>
+                                <BsCartPlus size={20} color="#fff" />
+                            </button>
+                        </div>
                     </div>
-                </section>
-            </div>
-        </div>
+                </div>
+            </section>
+        </main>
     )
 }
